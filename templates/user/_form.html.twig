@@ -1,0 +1,98 @@
+{{ form_start(form) }}
+<div class="row">
+    <div class="col-12 text-center">
+        <div class="mb-3 alert-danger">
+            {{ form_errors(form) }}
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-4">
+        <div class="mb-3">
+            {{ form_label(form.nom, null,{'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
+        </div>
+    </div>
+    <div class="col-4">
+        <div class="mb-3">
+            {{ form_label(form.prenom, null,{'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.prenom, {'attr': {'class': 'form-control'}}) }}
+        </div>
+    </div>
+    <div class="col-4">
+        <div class="mb-3">
+            {{ form_label(form.email, null,{'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="mb-3">
+            {{ form_label(form.matricule, null,{'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.matricule, {'attr': {'class': 'form-control'}}) }}
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6">
+        <div class="mb-3">
+            {{ form_label(form.password, null,{'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.password, {'attr': {'class': 'form-control'}}) }}
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="mb-3">
+            {{ form_label(form.passwordConfirm, null,{'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.passwordConfirm, {'attr': {'class': 'form-control'}}) }}
+            <span id="error-message" style="color: red; display: none;">{{ "passwordError"|trans }}</span>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="mb-3">
+            {{ form_label(form.roles, null,{'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.roles, {'attr': {'class': 'form-control'}}) }}
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="mb-3">
+            {{ form_row(form.rue) }}
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-3">
+        <div class="mb-3">
+            {{ form_row(form.cp, {'attr': {'autocomplete': 'on'}}) }}
+        </div>
+    </div>
+    <div class="col-9">
+        <div class="mb-3">
+            {{ form_row(form.ville) }}
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6">
+        <div class="mb-3">
+            {{ form_row(form.latitude) }}
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="mb-3">
+            {{ form_row(form.longitude) }}
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12 text-center">
+        <div class="mb-3">
+            <button class="btn btn-primary chat-send width-md waves-effect waves-light">{{ button_label|default('Save') | trans }}</button>
+        </div>
+    </div>
+</div>
+{{ form_end(form) }}

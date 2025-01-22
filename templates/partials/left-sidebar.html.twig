@@ -1,0 +1,59 @@
+<!-- ========== Left Sidebar Start ========== -->
+<div class="left-side-menu">
+
+    <div class="h-100" data-simplebar>
+
+        <!--- Sidemenu -->
+        <div id="sidebar-menu">
+            <br/><br/><br/><br/>
+            <ul id="side-menu">
+                <li>
+                    <a href="/">
+                        <i class="mdi mdi-view-dashboard-outline"></i>
+                        <span> {{"menu.dashboard"|trans}} </span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/materiel/">
+                        <i class="mdi mdi-harddisk"></i>
+                        <span class="badge bg-success rounded-pill float-end">{{ nbmateriels }}</span>
+                        <span> {{"menu.matos"|trans}} </span>
+                    </a>
+                </li>
+                <li>
+                    {% if is_granted('ROLE_ADMIN')%}
+                        <a href="/user/">
+                            <i class="mdi mdi-account"></i>
+                            <span class="badge bg-success rounded-pill float-end">{{ nbusers }}</span>
+                            <span> {{"menu.users"|trans}} </span>
+                        </a>
+                    {% endif %}
+                </li>
+                {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
+                    <li>
+                        <a href="{{ path('home', {'_switch_user': '_exit'}) }}">
+                            <i class="i-first fa fa-fw fa-user-times" aria-hidden="true"></i>
+                            <span> {{"menu.exitImpersonation"|trans}} </span>
+                        </a>
+                    </li>
+                {% endif %}
+                <li>
+                    <a href="/logout">
+                        <i class="mdi mdi-logout"></i>
+                        <span> {{"menu.logout"|trans}} </span>
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+        <!-- End Sidebar -->
+
+        <div class="clearfix"></div>
+
+    </div>
+    <!-- Sidebar -left -->
+
+</div>
+<!-- Left Sidebar End -->

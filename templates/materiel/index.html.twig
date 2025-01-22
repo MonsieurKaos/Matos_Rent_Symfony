@@ -1,0 +1,155 @@
+{% extends 'partials/layout-vertical.html.twig' %}
+
+{% block title %}
+    {% trans %}materiel.list{% endtrans %}
+{% endblock %}
+
+{% block css %}
+    <!-- third party css -->
+    <link href="/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/libs/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/libs/datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/libs/datatables.net-select-bs5/css//select.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+{% endblock %}
+
+{% block topbar %}
+    {{ include('partials/topbar.html.twig', { page_title: 'materiel.list', create_page: 'app_materiel_new', create_title: 'materiel.create' }) }}
+{% endblock %}
+{% set statutLabels = {
+    0: "materiel.statut.dispo"|trans,
+    1: "materiel.statut.ec"|trans,
+    2: "materiel.statut.er"|trans,
+    3: "materiel.statut.perdu"|trans
+} %}
+{% block body %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <table id="datatable" class="table">
+                        <thead>
+                        <tr>
+                            <th style="text-align:center">{{ "materiel.nom"|trans }}</th>
+                            <th style="text-align:center">{{ "materiel.version"|trans }}</th>
+                            <th style="text-align:center">{{ "materiel.ref"|trans }}</th>
+                            <th style="text-align:center">{{ "materiel.statutM"|trans }}</th>
+                            <th style="text-align:center">{{"actions"|trans}}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for materiel in materiel %}
+                            <tr>
+                                <td style="text-align:center">{{ materiel.nom }}</td>
+                                <td style="text-align:center">{{ materiel.version }}</td>
+                                <td style="text-align:center">{{ materiel.ref }}</td>
+                                <td style="text-align:center">{{ statutLabels[materiel.statut] ?? 'Statut inconnu' }}</td>
+                                <td style="text-align:right">
+                                    {% if materiel.statut == 0 %}
+                                        <button data-bs-toggle="modal" data-bs-target="#bs-example-modal-lg" data-target="{{ path('app_materiel_rent', {'id': materiel.id}) }}" data-tooltip="voir" class="tooltipped modal-trigger" href="#modal1"  style="border: none;background: white;padding: 0;margin-left:5px" onclick="url=$(this).attr('data-target');$.get(url, function (data) {$('.modal-body').html(data);$('.modal-title').html('{{ 'reserveM'|trans }}');});" onMouseOver="this.style.color='#F00'" onMouseOut="this.style.color='#000'">
+                                            <i class="fa fa-fw fa-handshake" style="font-size: 20px;color: #0f0f0f" aria-hidden="true"></i>
+                                        </button>
+                                    {% endif %}
+                                    {% if materiel.statut == 1 or materiel.statut == 2 %}
+                                        {% if is_granted('ROLE_ADMIN') or materiel.userEC == currentUser %}
+                                            <button data-bs-toggle="modal" data-bs-target="#bs-example-modal-lg" data-target="{{ path('app_materiel_return', {'id': materiel.id}) }}" data-tooltip="voir" class="tooltipped modal-trigger" href="#modal1"  style="border: none;background: white;padding: 0;margin-left:5px" onclick="url=$(this).attr('data-target');$.get(url, function (data) {$('.modal-body').html(data);$('.modal-title').html('{{ 'returnM'|trans }}');});" onMouseOver="this.style.color='#F00'" onMouseOut="this.style.color='#000'">
+                                                <i class="fa fa-fw fa-handshake-slash" style="font-size: 20px;color: #0f0f0f" aria-hidden="true"></i>
+                                            </button>
+                                        {% endif %}
+                                    {% endif %}
+                                    <a href="{{ path('app_materiel_show', {'id': materiel.id}) }}"><i class="fa fa-fw fa-eye" style="font-size: 20px;color: #0f0f0f" aria-hidden="true"></i></a>
+                                    {% if is_granted('ROLE_ADMIN')%}
+                                        <a href="{{ path('app_materiel_edit', {'id': materiel.id}) }}"><i class="fa fa-fw fa-edit" style="font-size: 20px;color: #0f0f0f" aria-hidden="true"></i></a>
+                                        <form method="post" style="width:20px;display: contents" action="{{ path('app_materiel_delete', {'id': materiel.id}) }}" onsubmit="return confirm('Etes vous sûr de vouloir supprimer cet materiel ?');">
+                                            <input type="hidden" name="_method" value="DELETE">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ materiel.id) }}">
+                                            <button style="-webkit-appearance: none;width: auto;min-width : 10px;border-radius: 0px;text-align: center;padding: 0px;margin: 0px;background-color: #ffffff;color: #000000;font-size: 14px;border: none;transition: all .3s ease;outline: 0;">
+                                                <i class="fas fa-2x fa-trash" style="font-size: 20px;color: #0f0f0f" aria-hidden="true"></i>
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="4">no records found</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content" style="border: darkgrey dashed">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myLargeModalLabel">Mises à jour</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+{% endblock %}
+
+{% block javascript %}
+<script src="/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/libs/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
+<script src="/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="/libs/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js"></script>
+<script src="/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="/libs/datatables.net-buttons-bs5/js/buttons.bootstrap5.min.js"></script>
+<script src="/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="/libs/datatables.net-buttons/js/buttons.flash.min.js"></script>
+<script src="/libs/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="/libs/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+<script src="/libs/datatables.net-select/js/dataTables.select.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.colVis.min.js"></script>
+<script type="text/javascript">
+    var table;
+    $(document).ready(function () {
+    table = $('#datatable').DataTable({
+        "paging":   true,
+        "pageLength": 10,
+        "ordering": false,
+        language: {
+            "sEmptyTable":     "Aucune donnée disponible dans le tableau",
+            "sInfo":           "Affichage de _TOTAL_ élément(s)",
+            "sInfoEmpty":      "Affichage de 0 élément",
+            "sInfoFiltered":   "(filtré à partir de _MAX_ élément(s) au total)",
+            "sInfoThousands":  ",",
+            "sLengthMenu":     "Afficher _MENU_ éléments",
+            "sLoadingRecords": "Chargement...",
+            "sProcessing":     "Traitement...",
+            "sSearch":         "Rechercher :",
+            "sZeroRecords":    "Aucun élément correspondant trouvé",
+            "oPaginate": {
+                "sFirst":    "Premier",
+                "sLast":     "Dernier",
+                "sNext":     "Suivant",
+                "sPrevious": "Précédent"
+            },
+            "oAria": {
+                "sSortAscending":  ": activer pour trier la colonne par ordre croissant",
+                "sSortDescending": ": activer pour trier la colonne par ordre décroissant"
+            },
+            "select": {
+                "rows": {
+                    "_": "%d lignes sélectionnées",
+                    "0": "Aucune ligne sélectionnée",
+                    "1": "1 ligne sélectionnée"
+                }
+            }
+        }
+    })
+});
+
+</script>
+{% endblock %}

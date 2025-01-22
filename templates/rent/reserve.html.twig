@@ -1,0 +1,44 @@
+{% block body %}
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    {{ form_start(form, {'attr': {'id': 'materiel'},'action': path('app_materiel_rent', {'id': materiel.id})}) }}
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <span>{{ "reserve.confirm"|trans }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="mb-3">
+                                {{ form_label(form.dateEmprunt, null,{'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.dateEmprunt, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                {{ form_label(form.dateRetourPrev, null,{'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.dateRetourPrev, {'attr': {'class': 'form-control' }}) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <div class="mb-3">
+                                <button class="btn btn-primary chat-send width-md waves-effect waves-light">{{ button_label|default('Validate') | trans }}</button>
+                            </div>
+                        </div>
+                    </div>
+                    {{ form_end(form) }}
+                </div>
+                <!-- end card-body-->
+            </div>
+            <!-- end card-->
+        </div>
+        <!-- end col-->
+    </div>
+{% endblock %}

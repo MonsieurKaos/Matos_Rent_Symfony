@@ -1,0 +1,47 @@
+<!-- Topbar Start -->
+<div class="navbar-custom">
+        <ul class="list-unstyled topnav-menu float-end mb-0">
+
+
+        </ul>
+
+        <!-- LOGO -->
+        <div class="logo-box">
+            <a href="/" class="logo logo-dark text-center">
+                <span class="logo-lg">
+                    <img src="/images/logo.png" alt="" height="120">
+                </span>
+            </a>
+        </div>
+
+        <ul class="list-unstyled topnav-menu topnav-menu-left mb-0">
+            <li>
+                <button class="button-menu-mobile disable-btn waves-effect">
+                    <i class="fe-menu"></i>
+                </button>
+            </li>
+    
+            <li>
+                <h4 class="page-title-main">{{ (page_title) ? page_title|trans : '' }}</h4>
+            </li>
+            
+        </ul>
+    {% if is_granted('ROLE_ADMIN') and modify_page is defined and modify_page != "" %}
+        <div style="float: right;margin-top: 15px;margin-left: 15px">
+            <a href="{{ path(modify_page, {'id': modify_id }) }}" class="btn btn-blue rounded-pill w-md waves-effect waves-light mb-3"><i class="mdi mdi-account-edit-outline"></i> {{modify_title|trans}}</a>
+        </div>
+    {% endif %}
+    {% if back_page is defined and back_page != "" %}
+        <div style="float: right;margin-top: 15px">
+            <a href="{{ path(back_page) }}" class="btn btn-danger rounded-pill w-md waves-effect waves-light mb-3"><i class="mdi mdi-backspace-outline"></i> {% trans %}Revenir{% endtrans %}</a>
+        </div>
+    {% endif %}
+    {% if is_granted('ROLE_ADMIN') and create_page is defined and create_page != "" %}
+        <div style="float: right;margin-top: 15px">
+            <a href="{{ path(create_page) }}" class="btn btn-purple rounded-pill w-md waves-effect waves-light mb-3"><i class="mdi mdi-plus"></i> {{create_title|trans}}</a>
+        </div>
+    {% endif %}
+        <div class="clearfix"></div> 
+               
+</div>
+<!-- end Topbar -->

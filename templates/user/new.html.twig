@@ -1,0 +1,149 @@
+{% extends 'partials/layout-vertical.html.twig' %}
+
+{% block title %}
+    {% trans %}user.new{% endtrans %}
+{% endblock %}
+
+{% block css %}
+    <link href="/libs/select2/css/select2.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/libs/jquery-ui/jquery-ui.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block topbar %}
+    {{ include('partials/topbar.html.twig', { page_title: 'user.new', back_page:'user_index' }) }}
+{% endblock %}
+
+
+{% block body %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    {{ include('user/_form.html.twig') }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascript %}
+    <script src="/libs/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
+    <script src="/libs/select2/js/select2.min.js"></script>
+    <script src="/libs/jquery-ui/jquery-ui.min.js"> </script>
+    <script>
+        $('[data-toggle="select2"]').select2()
+        $("#user_cp").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "https://api-adresse.data.gouv.fr/search/?postcode="+$("input[id='user_cp']").val(),
+                    data: { q: request.term },
+                    dataType: "json",
+                    success: function (data) {
+                        var postcodes = [];
+                        response($.map(data.features, function (item) {
+                            // Ici on est obligé d'ajouter les CP dans un array pour ne pas avoir plusieurs fois le même
+                            if ($.inArray(item.properties.postcode, postcodes) == -1) {
+                                postcodes.push(item.properties.postcode);
+                                return { label: item.properties.postcode + " - " + item.properties.city,
+                                    city: item.properties.city,
+                                    latitude: item.geometry.coordinates[1],
+                                    longitude: item.geometry.coordinates[0],
+                                    value: item.properties.postcode
+                                };
+                            }
+                        }));
+                    }
+                });
+            },
+            // On remplit aussi la ville
+            select: function(event, ui) {
+                $('#user_ville').val(ui.item.city);
+                $('#user_latitude').val(ui.item.latitude);
+                $('#user_longitude').val(ui.item.longitude);
+            }
+        });
+        $("#user_ville").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "https://api-adresse.data.gouv.fr/search/?city="+$("input[id='user_ville']").val(),
+                    data: { q: request.term },
+                    dataType: "json",
+                    success: function (data) {
+                        var cities = [];
+                        response($.map(data.features, function (item) {
+                            // Ici on est obligé d'ajouter les villes dans un array pour ne pas avoir plusieurs fois la même
+                            if ($.inArray(item.properties.postcode, cities) == -1) {
+                                cities.push(item.properties.postcode);
+                                return { label: item.properties.postcode + " - " + item.properties.city,
+                                    postcode: item.properties.postcode,
+                                    latitude: item.geometry.coordinates[1],
+                                    longitude: item.geometry.coordinates[0],
+                                    value: item.properties.city
+                                };
+                            }
+                        }));
+                    }
+                });
+            },
+            // On remplit aussi le CP
+            select: function(event, ui) {
+                $('#user_cp').val(ui.item.postcode);
+                $('#user_latitude').val(ui.item.latitude);
+                $('#user_longitude').val(ui.item.longitude);
+            }
+        });
+        $("#user_rue").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "https://api-adresse.data.gouv.fr/search/?postcode="+$("input[id='user_cp']").val(),
+                    data: { q: request.term },
+                    dataType: "json",
+                    success: function (data) {
+                        response($.map(data.features, function (item) {
+                            return { label: item.properties.name + " - " + item.properties.postcode + " - " + item.properties.city,
+                                postcode: item.properties.postcode,
+                                city: item.properties.city,
+                                latitude: item.geometry.coordinates[1],
+                                longitude: item.geometry.coordinates[0],
+                                value: item.properties.name
+                            };
+                        }));
+                    }
+                });
+            },
+            // On remplit aussi le CP
+            select: function(event, ui) {
+                $('#user_cp').val(ui.item.postcode);
+                $('#user_ville').val(ui.item.city);
+                $('#user_latitude').val(ui.item.latitude);
+                $('#user_longitude').val(ui.item.longitude);
+            }
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            const checkboxes = document.querySelectorAll('#user_roles input[type="checkbox"]');
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function () {
+                    if (this.checked) {
+                        checkboxes.forEach(cb => {
+                            if (cb !== this) {
+                                cb.checked = false;
+                            }
+                        });
+                    }
+                });
+            });
+        });
+        document.getElementById('userForm').addEventListener('submit', function (event) {
+            const password = document.getElementById('user_password').value;
+            const password2 = document.getElementById('user_passwordConfirm').value;
+            const errorMessage = document.getElementById('error-message');
+
+            if (password !== password2) {
+                event.preventDefault(); // Empêche la soumission du formulaire
+                errorMessage.style.display = 'block'; // Affiche le message d'erreur
+            } else {
+                errorMessage.style.display = 'none'; // Masque le message d'erreur
+            }
+        });
+    </script>
+{% endblock %}

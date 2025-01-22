@@ -1,0 +1,89 @@
+{% extends 'partials/layout-vertical.html.twig' %}
+
+{% block title %}
+    {% trans %}matos.edit{% endtrans %}
+{% endblock %}
+{% block css %}
+    <!-- Plugins css -->
+    <link href="/libs/select2/css/select2.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/libs/jquery-ui/jquery-ui.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block topbar %}
+    {{ include('partials/topbar.html.twig', { page_title: 'matos.edit', back_page:'app_materiel_index' }) }}
+{% endblock %}
+
+{% block body %}
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    {{ include('materiel/_form.html.twig', {'button_label': 'Mise à jour','action': 1}) }}
+                </div>
+                <!-- end card-body-->
+            </div>
+            <!-- end card-->
+        </div>
+        <!-- end col-->
+    </div>
+{% endblock %}
+{% block javascript %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.querySelector('form');
+
+            form.addEventListener('submit', function (event) {
+                let isValid = true;
+
+                // Validation du champ "Nom"
+                const nom = document.getElementById('nom');
+                const nomError = document.getElementById('nom-error');
+                if (!/^[a-zA-Z0-9\s]+$/.test(nom.value) || nom.value.length < 1 || nom.value.length > 30) {
+                    nomError.textContent = 'Le nom doit être alphanumérique et contenir entre 1 et 30 caractères.';
+                    isValid = false;
+                } else {
+                    nomError.textContent = '';
+                }
+
+                // Validation du champ "Version"
+                const version = document.getElementById('version');
+                const versionError = document.getElementById('version-error');
+                if (!/^[a-zA-Z0-9\.]+$/.test(version.value) || version.value.length < 3 || version.value.length > 15) {
+                    versionError.textContent = 'La version doit être alphanumérique et contenir entre 3 et 15 caractères.';
+                    isValid = false;
+                } else {
+                    versionError.textContent = '';
+                }
+
+                // Validation du champ "Ref"
+                const ref = document.getElementById('ref');
+                const refError = document.getElementById('ref-error');
+                if (!/^(AN|AP|XX)[0-9]{3}$/.test(ref.value)) {
+                    refError.textContent = 'La référence doit commencer par AN, AP ou XX, suivie de 3 chiffres.';
+                    isValid = false;
+                } else {
+                    refError.textContent = '';
+                }
+
+                const telephone = document.getElementById('telephone');
+                const telephoneError = document.getElementById('telephone-error');
+                if (telephone.value !== '') {
+                    const phoneRegex = /^(\+33|0)[1-9][0-9]{8}$/;
+                    if (!phoneRegex.test(telephone.value)) {
+                        telephoneError.textContent = 'Le numéro de téléphone doit être au format +33XXXXXXXXX ou 0XXXXXXXXX.';
+                        isValid = false;
+                    } else {
+                        telephoneError.textContent = '';
+                    }
+                } else {
+                    telephoneError.textContent = ''; // Aucun message si le champ est vide
+                }
+                // Si une validation échoue, on empêche la soumission du formulaire
+                if (!isValid) {
+                    event.preventDefault();
+                }
+            });
+        });
+    </script>
+{% endblock %}

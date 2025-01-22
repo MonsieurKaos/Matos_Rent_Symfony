@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "cypress": "^14.0.0"
+  },
+  "scripts": {
+    "cypress:open": "export HTTP_PROXY=http://127.0.0.1:8000/proxy.pac && cypress open"
+  }
+}

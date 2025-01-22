@@ -1,0 +1,74 @@
+{{ form_start(form) }}
+<div class="row">
+    <div class="col-12 text-center">
+        <div class="mb-3 alert-danger">
+            {{ form_errors(form) }}
+            {% for error in form.nom.vars.errors %}
+                <div class="alert alert-danger">{{ error.message }}</div>
+            {% endfor %}
+            {% for error in form.version.vars.errors %}
+                <div class="alert alert-danger">{{ error.message }}</div>
+            {% endfor %}
+            {% for error in form.ref.vars.errors %}
+                <div class="alert alert-danger">{{ error.message }}</div>
+            {% endfor %}
+            {% for error in form.telephone.vars.errors %}
+                <div class="error">{{ error.message }}</div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-4">
+        <div class="mb-3">
+            {{ form_label(form.nom, null,{'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.nom, {'attr': {'class': 'form-control','minlength':'1','maxlength':'30','pattern':'[a-zA-Z0-9\s]+','title':'error.nom'}}) }}
+        </div>
+    </div>
+    <div class="col-4">
+        <div class="mb-3">
+            {{ form_label(form.version, null,{'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.version, {'attr': {'class': 'form-control','minlength':'3','maxlength':'15','pattern':'[a-zA-Z0-9\.]+','title':'error.version' }}) }}
+        </div>
+    </div>
+    <div class="col-4">
+        <div class="mb-3">
+            {{ form_label(form.ref, null,{'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.ref, {'attr': {'class': 'form-control','pattern':'^(AN|AP|XX)[0-9]{3}$','title':'error.ref' }}) }}
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="mb-3">
+            {{ form_label(form.telephone, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.telephone, {'attr': {'class': 'form-control', 'pattern':'^(\+33|0)[1-9][0-9]{8}$','title':'error.ref' }}) }}
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="mb-3">
+            {{ form_label(form.photo, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.photo, {'attr': {'class': 'form-control'}}) }}
+        </div>
+    </div>
+</div>
+{% if action is defined and action == 1 %}
+<div class="row">
+    <div class="col-12 text-center">
+        <div class="mb-3">
+            <img src="{{ asset('uploads/files/' ~ materiel.photo) }}" class="rounded-circle avatar-xl img-thumbnail mb-2">
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row">
+    <div class="col-12 text-center">
+        <div class="mb-3">
+            <button class="btn btn-primary chat-send width-md waves-effect waves-light">{{ button_label|default('Save') | trans }}</button>
+        </div>
+    </div>
+</div>
+{{ form_end(form) }}

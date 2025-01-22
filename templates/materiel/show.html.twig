@@ -1,0 +1,151 @@
+{% extends 'partials/layout-vertical.html.twig' %}
+
+{% block title %}
+    {% trans %}matos.show{% endtrans %}
+{% endblock %}
+{% block css %}
+{% endblock %}
+
+{% block topbar %}
+    {{ include('partials/topbar.html.twig', { page_title: 'matos.show', back_page:'app_materiel_index', modify_page: 'app_materiel_edit', modify_id: materiel.id, modify_title: 'edit'}) }}
+{% endblock %}
+
+{% block body %}
+
+<div class="row">
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="mb-3">
+                            <span style="font-weight: bolder"><i class="fa fa-fw fa-signature" style="margin-right: 10px" aria-hidden="true"></i>{{ "materiel.nom"|trans }} : </span>
+                            <span>{{ materiel.nom }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="mb-3">
+                            <span style="font-weight: bolder"><i class="fa fa-fw fa-code-branch" style="margin-right: 10px" aria-hidden="true"></i>{{ "materiel.version"|trans }} : </span>
+                            <span>{{ materiel.version }}</span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="mb-3">
+                            <span style="font-weight: bolder"><i class="fa fa-fw fa-rotate" style="margin-right: 10px" aria-hidden="true"></i>{{ "materiel.ref"|trans }} : </span>
+                            <span>{{ materiel.ref }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="mb-3">
+                            <span style="font-weight: bolder"><i class="fa fa-fw fa-phone" style="margin-right: 10px" aria-hidden="true"></i>{{ "materiel.tel"|trans }} : </span>
+                            <span>{% if materiel.telephone is not null %}{{ materiel.telephone }}{% endif %}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="mb-3">
+                            <span style="font-weight: bolder"><i class="fa fa-fw  fa-camera" style="margin-right: 10px" aria-hidden="true"></i>{{ "materiel.photo"|trans }} : </span>
+                            <img src="{{ asset('uploads/files/' ~ materiel.photo) }}" style="max-width: 400px">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end card-body-->
+        </div>
+        <!-- end card-->
+        {% if materiel.statut != 0 %}
+            <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="mb-3">
+                            <span style="font-weight: bolder">{{ "materiel.emprunte"|trans }} : </span>
+                            <span>{% if materiel.statut == 0 %}{{ "materiel.statut.dispo"|trans }}{% elseif materiel.statut == 1 %}{{ "materiel.statut.ec"|trans }}{% elseif materiel.statut == 2 %}{{ "materiel.statut.er"|trans }}{% elseif materiel.statut == 3 %}{{ "materiel.statut.perdu"|trans }}{% endif %}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="mb-3">
+                            <span style="font-weight: bolder"><i class="fa fa-fw fa-user" style="margin-right: 10px" aria-hidden="true"></i>{{ "materiel.emprunteurNom"|trans }} : </span>
+                            <span>{{ materiel.emprunteur }}</span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="mb-3">
+                            <span style="font-weight: bolder"><i class="fa fa-fw fa-mail-bulk" style="margin-right: 10px" aria-hidden="true"></i>{{ "materiel.emprunteurMail"|trans }} : </span>
+                            <span>{{ materiel.userEC }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="mb-3">
+                            <span style="font-weight: bolder"><i class="fa fa-fw fa-calendar-day" style="margin-right: 10px" aria-hidden="true"></i>{{ "materiel.emprunteurDate"|trans }} : </span>
+                            <span>{{ materiel.dateEmprunt|date("d/m/Y") }}</span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="mb-3">
+                            <span style="font-weight: bolder"><i class="fa fa-fw fa-calendar-day" style="margin-right: 10px" aria-hidden="true"></i>{{ "materiel.emprunteurDateR"|trans }} : </span>
+                            <span>{{ materiel.dateRetourPrev|date("d/m/Y") }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end card-body-->
+        </div>
+        {% endif %}
+    </div>
+    <!-- end col-->
+   <div class="col-lg-5">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="header-title mb-3">Localisation</h4>
+                <div id="gmaps-markers" class="gmaps" style="height: 400px"></div>
+            </div>
+        </div>
+    </div><!-- end col -->
+</div>
+<!-- end row -->
+
+{% endblock %}
+{% block javascript %}
+<!-- google maps api -->
+<script src="https://maps.google.com/maps/api/js?key=AIzaSyDT9ffyzoCHS_3dlyAQ7Fjr5_pQQFjn79o"></script>
+<!-- google map plugin -->
+<script src="/libs/gmaps/gmaps.min.js"></script>
+<script>
+    e=new GMaps({
+            div: "#gmaps-markers",
+            lat: {{ materiel.latitude }},
+            lng: {{ materiel.longitude }},
+            zoom : 14
+        });
+    e.addMarker({
+            lat: {{ materiel.latitude }},
+            lng: {{ materiel.longitude }},
+            title: "{{ materiel.nom }}",
+            {% if materiel.statut == 0 %}
+                icon: {
+                    url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+                }
+            {% endif %}
+            {% if materiel.statut == 1 %}
+                icon: {
+                    url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
+                }
+            {% endif %}
+            {% if materiel.statut == 2 %}
+                icon: {
+                    url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
+                }
+            {% endif %}
+        })
+</script>
+{% endblock %}
