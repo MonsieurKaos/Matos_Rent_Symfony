@@ -75,13 +75,13 @@ class UserController extends AbstractController
                 ['name' => $user->getPrenom()." ".$user->getNom(),
                     'mdp'=> $password]
             );
-            $message = (new Email())
-                ->from('a.collaborateur@cat-amania.com')
-                ->subject($translator->trans('welcome'))
-                ->to($user->getEmail())
-                ->priority(Email::PRIORITY_HIGH)
-                ->html($htmlContents);
-            $mailer->send($message);
+            //$message = (new Email())
+            //    ->from('a.collaborateur@cat-amania.com')
+            //    ->subject($translator->trans('welcome'))
+            //    ->to($user->getEmail())
+            //    ->priority(Email::PRIORITY_HIGH)
+            //    ->html($htmlContents);
+            //$mailer->send($message);
 
             return $this->redirectToRoute('user_index');
         }
