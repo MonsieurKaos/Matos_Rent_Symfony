@@ -59,6 +59,12 @@ descendre dans le répertoire du projet et lancer la configuration projet
 cd mmatos_rent
 composer install
 ```
+Vous aurez peut être besoin de modifier la ligne DATABASE_URL dans le fichier .env selon votre installation :
+
+```
+DATABASE_URL="mysql://materiel:li8Rgvzz@127.0.0.1:3306/materiel?serverVersion=11.6.2-MariaDB&charset=utf8mb4"
+```
+
 
 Initialiser les données de base de l'application :
 ```
