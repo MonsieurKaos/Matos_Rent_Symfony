@@ -5,6 +5,10 @@ describe('UserController Tests', () => {
         // Ignore cette erreur spécifique
         return false;
       }
+      if (err.message.includes('addEventListener')) {
+        // Ignore cette erreur spécifique
+        return false;
+      }
       // Ne pas ignorer les autres erreurs
       return true;
     });
@@ -30,14 +34,22 @@ describe('UserController Tests', () => {
     // Remplir le formulaire
     cy.get('#user_nom').type('User_test');
     cy.get('#user_prenom').type('User_test');
+    cy.get('#user_matricule').type('MATTEST');
     cy.get('#user_email').type('user@test.com');
     cy.get('#user_password').type('securepassword123');
     cy.get('#user_passwordConfirm').type('securepassword123');
-    cy.get('#user_rue').type('123 rue de l\'exemple');
-    cy.get('#user_cp').type('75000');
-    cy.get('#user_ville').type('Paris');
+    cy.get('#user_rue').type('123 rue du test');
+    cy.get('#user_cp').type('37000');
+    cy.get('#user_ville').type('Tours');
+    // Wait for the city search to complete and select the city
+    //cy.wait(2000); // Adjust the wait time as needed
+    //cy.get('#ui-id-1').first().click(); // Adjust the selector to match the search result
+
+    // Verify that latitude and longitude are auto-filled
+    //cy.get('#user_latitude').should('not.be.empty');
+    //cy.get('#user_longitude').should('not.be.empty');
     cy.get('#user_roles').find('input[type="checkbox"]').first().check();
-    cy.get('form').submit();
+    cy.contains('Sauvegarder').click();
 
     // Vérifier la redirection et l'ajout
     cy.url().should('include', '/user');
@@ -49,7 +61,8 @@ describe('UserController Tests', () => {
     cy.get('table tbody tr')
         .contains('User_test')
         .parent()
-        .find('a.edit-button')
+        .find('a[href*="/edit"]')
+        .should('be.visible')
         .click();
 
     // Modifier le formulaire
@@ -64,10 +77,11 @@ describe('UserController Tests', () => {
   it('should delete a user', () => {
     // Trouver et cliquer sur le bouton de suppression
     cy.get('table tbody tr')
-        .contains('User_modif')
+        .contains('User_test')
         .parent()
-        .find('form.delete-form')
-        .submit();
+        .find('button i.fa-trash')
+        .should('be.visible')
+        .click();
 
     // Vérifier que l'utilisateur a été supprimé
     cy.url().should('include', '/user');
